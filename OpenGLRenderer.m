@@ -13,6 +13,9 @@
 
 #import "ModelObject.h" 
 
+const unsigned kMaximumNumberOfObjects = 1000;
+const unsigned kNumberOfInflightBuffers = 3;
+
 @implementation OpenGLRenderer
 {
     /*
@@ -28,11 +31,13 @@
     GLKMatrix4 _viewMatrix;
     
     ParticleSystemShaders *_shaderObject;
-    
-    GLuint _modelMatricesBuffer;
-    
     ModelObject *_sphere;
-    ModelObject *_cube;
+   
+    GLsync _fences[kNumberOfInflightBuffers];
+    GLuint _modelMatricesBuffers[kNumberOfInflightBuffers];
+    GLuint _vertexArrayObjects[kNumberOfInflightBuffers];
+    
+    unsigned _currentBufferIndex;
 }
 
 - (instancetype) init
@@ -40,10 +45,15 @@
     self = [super init];
     if (self) {
         
+        _currentBufferIndex = 0;
+        
+        _fences[0] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        _fences[1] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        _fences[2] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        
         _shaderObject = [[ParticleSystemShaders alloc] init];
         
         _sphere = [[ModelObject alloc] initWithModelName:@"sphere" andShaderObject:_shaderObject];
-        _cube = [[ModelObject alloc] initWithModelName:@"cube" andShaderObject:_shaderObject];
         
         [self updateCameraWithTime:0];
         [self prepareToDraw];
@@ -70,49 +80,36 @@
 
     glEnable(GL_DEPTH_TEST);
     
-    static GLKMatrix4 modelMatrices[9];
-    
-    modelMatrices[0] = GLKMatrix4Identity;
-    modelMatrices[0] = GLKMatrix4Scale(modelMatrices[0], 0.3f, 0.3f, 0.3f);
-    modelMatrices[0] = GLKMatrix4Translate(modelMatrices[0], 1.f, 0, 0);
-    
-    modelMatrices[1] = GLKMatrix4Identity;
-    modelMatrices[1] = GLKMatrix4Scale(modelMatrices[1], 0.3f, 0.3f, 0.3f);
-    modelMatrices[1] = GLKMatrix4Translate(modelMatrices[1], -1.f, 0, 0);
-    
-    modelMatrices[2] = GLKMatrix4Identity;
-    modelMatrices[2] = GLKMatrix4Scale(modelMatrices[2], 0.3f, 0.3f, 0.3f);
-    modelMatrices[2] = GLKMatrix4Translate(modelMatrices[2], 3.f, 0, 0);
-    
-    modelMatrices[3] = GLKMatrix4Identity;
-    modelMatrices[3] = GLKMatrix4Scale(modelMatrices[3], 0.3f, 0.3f, 0.3f);
-    modelMatrices[3] = GLKMatrix4Translate(modelMatrices[3], -3.f, 0, 0);
-    
-    modelMatrices[4] = GLKMatrix4Identity;
-    modelMatrices[4] = GLKMatrix4Scale(modelMatrices[4], 0.3f, 0.3f, 0.3f);
-    modelMatrices[4] = GLKMatrix4Translate(modelMatrices[4], 5.f, 0, 0);
-    
-    modelMatrices[5] = GLKMatrix4Identity;
-    modelMatrices[5] = GLKMatrix4Scale(modelMatrices[5], 0.3f, 0.3f, 0.3f);
-    modelMatrices[5] = GLKMatrix4Translate(modelMatrices[5], -5.f, 0, 0);
-    
-    modelMatrices[6] = GLKMatrix4Identity;
-    modelMatrices[6] = GLKMatrix4Scale(modelMatrices[6], 0.3f, 0.3f, 0.3f);
-    modelMatrices[6] = GLKMatrix4Translate(modelMatrices[6], 1.f, 2.f, 0);
-    
-    modelMatrices[7] = GLKMatrix4Identity;
-    modelMatrices[7] = GLKMatrix4Scale(modelMatrices[7], 0.3f, 0.3f, 0.3f);
-    modelMatrices[7] = GLKMatrix4Translate(modelMatrices[7], -1.f, 2.f, 0);
-    
-    modelMatrices[8] = GLKMatrix4Identity;
-    modelMatrices[8] = GLKMatrix4Scale(modelMatrices[8], 0.3f, 0.3f, 0.3f);
-    modelMatrices[8] = GLKMatrix4Translate(modelMatrices[8], 3.f, 2.f, 0);
-    
-    glGenBuffers(1, &_modelMatricesBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _modelMatricesBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLKMatrix4) * 9, &modelMatrices, GL_DYNAMIC_DRAW);
+    [self createVertexArraysObjects];
+}
+
+- (void) createVertexArraysObjects
+{
+    for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
+        
+        glGenVertexArrays(1, &_vertexArrayObjects[i]);
+        glBindVertexArray(_vertexArrayObjects[i]);
+        
+        glGenBuffers(1, &_modelMatricesBuffers[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, _modelMatricesBuffers[i]);
+        glBufferData(GL_ARRAY_BUFFER, kMaximumNumberOfObjects * sizeof(GLKMatrix4), NULL, GL_STREAM_DRAW);
+        
+        const GLuint modelMatrixAttributePosition = _shaderObject.in_modelMatrix;
+        
+        for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
+            glEnableVertexAttribArray(positionIndex);
+            glVertexAttribPointer(positionIndex, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void *)(sizeof(float) * (positionIndex * 4)));
+            glVertexAttribDivisor(positionIndex, 1);
+        }
+        
+    }
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    glDisableVertexAttribArray(_shaderObject.in_modelMatrix);
+    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+1);
+    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+2);
+    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+3);
 }
 
 #pragma mark -
@@ -122,20 +119,146 @@
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    // update uniforms
     glUniformMatrix4fv(_shaderObject.u_viewMatrix, 1, NO, _viewMatrix.m);
     
-    //model matrices
-    glBindBuffer(GL_ARRAY_BUFFER, _modelMatricesBuffer);
+    // update model matrices
+    [self updateAndDraw];
+}
+
+- (BOOL) updateAndDraw
+{
+    static GLKMatrix4 firstModelMatrices[9];
     
-    const GLuint modelMatrixAttributePosition = _shaderObject.in_modelMatrix;
+    firstModelMatrices[0] = GLKMatrix4Identity;
+    firstModelMatrices[0] = GLKMatrix4Scale(firstModelMatrices[0], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[0] = GLKMatrix4Translate(firstModelMatrices[0], 1.f, 0, 0);
     
-    for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition+ 4; ++positionIndex) {
-        glEnableVertexAttribArray(positionIndex);
-        glVertexAttribPointer(positionIndex, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void *)(sizeof(float) * (positionIndex * 4)));
-        glVertexAttribDivisor(positionIndex, 1);
+    firstModelMatrices[1] = GLKMatrix4Identity;
+    firstModelMatrices[1] = GLKMatrix4Scale(firstModelMatrices[1], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[1] = GLKMatrix4Translate(firstModelMatrices[1], -1.f, 0, 0);
+    
+    firstModelMatrices[2] = GLKMatrix4Identity;
+    firstModelMatrices[2] = GLKMatrix4Scale(firstModelMatrices[2], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[2] = GLKMatrix4Translate(firstModelMatrices[2], 3.f, 0, 0);
+    
+    firstModelMatrices[3] = GLKMatrix4Identity;
+    firstModelMatrices[3] = GLKMatrix4Scale(firstModelMatrices[3], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[3] = GLKMatrix4Translate(firstModelMatrices[3], -3.f, 0, 0);
+    
+    firstModelMatrices[4] = GLKMatrix4Identity;
+    firstModelMatrices[4] = GLKMatrix4Scale(firstModelMatrices[4], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[4] = GLKMatrix4Translate(firstModelMatrices[4], 5.f, 0, 0);
+    
+    firstModelMatrices[5] = GLKMatrix4Identity;
+    firstModelMatrices[5] = GLKMatrix4Scale(firstModelMatrices[5], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[5] = GLKMatrix4Translate(firstModelMatrices[5], -5.f, 0, 0);
+    
+    firstModelMatrices[6] = GLKMatrix4Identity;
+    firstModelMatrices[6] = GLKMatrix4Scale(firstModelMatrices[6], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[6] = GLKMatrix4Translate(firstModelMatrices[6], 1.f, 2.f, 0);
+    
+    firstModelMatrices[7] = GLKMatrix4Identity;
+    firstModelMatrices[7] = GLKMatrix4Scale(firstModelMatrices[7], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[7] = GLKMatrix4Translate(firstModelMatrices[7], -1.f, 2.f, 0);
+    
+    firstModelMatrices[8] = GLKMatrix4Identity;
+    firstModelMatrices[8] = GLKMatrix4Scale(firstModelMatrices[8], 0.3f, 0.3f, 0.3f);
+    firstModelMatrices[8] = GLKMatrix4Translate(firstModelMatrices[8], 3.f, 2.f, 0);
+    
+    static GLKMatrix4 secondModelMatrices[9];
+    
+    secondModelMatrices[0] = GLKMatrix4Identity;
+    secondModelMatrices[0] = GLKMatrix4Scale(secondModelMatrices[0], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[0] = GLKMatrix4Translate(secondModelMatrices[0], 1.f, 0, 0);
+    
+    secondModelMatrices[1] = GLKMatrix4Identity;
+    secondModelMatrices[1] = GLKMatrix4Scale(secondModelMatrices[1], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[1] = GLKMatrix4Translate(secondModelMatrices[1], -1.f, 0, 0);
+    
+    secondModelMatrices[2] = GLKMatrix4Identity;
+    secondModelMatrices[2] = GLKMatrix4Scale(secondModelMatrices[2], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[2] = GLKMatrix4Translate(secondModelMatrices[2], 3.f, 0, 0);
+    
+    secondModelMatrices[3] = GLKMatrix4Identity;
+    secondModelMatrices[3] = GLKMatrix4Scale(secondModelMatrices[3], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[3] = GLKMatrix4Translate(secondModelMatrices[3], -3.f, 0, 0);
+    
+    secondModelMatrices[4] = GLKMatrix4Identity;
+    secondModelMatrices[4] = GLKMatrix4Scale(secondModelMatrices[4], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[4] = GLKMatrix4Translate(secondModelMatrices[4], 5.f, 0, 0);
+    
+    secondModelMatrices[5] = GLKMatrix4Identity;
+    secondModelMatrices[5] = GLKMatrix4Scale(secondModelMatrices[5], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[5] = GLKMatrix4Translate(secondModelMatrices[5], -5.f, 0, 0);
+    
+    secondModelMatrices[6] = GLKMatrix4Identity;
+    secondModelMatrices[6] = GLKMatrix4Scale(secondModelMatrices[6], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[6] = GLKMatrix4Translate(secondModelMatrices[6], 1.f, 2.f, 0);
+    
+    secondModelMatrices[7] = GLKMatrix4Identity;
+    secondModelMatrices[7] = GLKMatrix4Scale(secondModelMatrices[7], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[7] = GLKMatrix4Translate(secondModelMatrices[7], -1.f, 2.f, 0);
+    
+    secondModelMatrices[8] = GLKMatrix4Identity;
+    secondModelMatrices[8] = GLKMatrix4Scale(secondModelMatrices[8], 0.1f, 0.1f, 0.1f);
+    secondModelMatrices[8] = GLKMatrix4Translate(secondModelMatrices[8], 3.f, 2.f, 0);
+    
+    BOOL success;
+    
+    GLuint currentBuffer = _modelMatricesBuffers[_currentBufferIndex];
+    
+    GLKMatrix4 *newData;
+    
+    if (_currentBufferIndex == 0) {
+        newData = &secondModelMatrices[0];
+    } else {
+        newData = &firstModelMatrices[0];
     }
     
+    GLuint newDataLength = 9 * sizeof(GLKMatrix4);
+    GLuint length = kMaximumNumberOfObjects * sizeof(GLKMatrix4);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+    
+    GetGLError();
+    
+    void *old_data = glMapBufferRange(GL_ARRAY_BUFFER, 0, length,
+                                      GL_MAP_WRITE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT |
+                                      GL_MAP_UNSYNCHRONIZED_BIT );
+    
+    GetGLError();
+    
+    glClientWaitSync(_fences[_currentBufferIndex], GL_SYNC_FLUSH_COMMANDS_BIT, GL_TIMEOUT_IGNORED);
+    
+    glDeleteSync(_fences[_currentBufferIndex]);
+    
+    GetGLError();
+    
+    // Modify buffer, flush, and unmap.
+    memcpy(old_data, newData, newDataLength);
+    
+    GetGLError();
+    
+    glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, length);
+    
+    GetGLError();
+    
+    success = glUnmapBuffer(GL_ARRAY_BUFFER);
+    
+    GetGLError();
+
+
+    GetGLError();
+    
     [_sphere draw];
+    
+    _currentBufferIndex = (_currentBufferIndex + 1) % kNumberOfInflightBuffers;
+    
+    // Create a fence that the next frame will wait for.
+    _fences[_currentBufferIndex] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+    
+    return success;
 }
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
@@ -170,5 +293,16 @@ static inline GLKMatrix4 lookAt(GLKVector3 cameraPosition)
                                 0.f, 0.f, 0.f,
                                 0.f, 1.f, 0.f);
 }
+
+static inline GLKMatrix4 modelMatrixWithPositionAndScale(GLKVector3 position, float scale)
+{
+    GLKMatrix4 modelMatrix = GLKMatrix4Identity;
+    modelMatrix = GLKMatrix4Translate(modelMatrix, position.x, position.y, position.z);
+    modelMatrix = GLKMatrix4Scale(modelMatrix, scale, scale, scale);
+    
+    return modelMatrix;
+}
+
+
 
 @end
