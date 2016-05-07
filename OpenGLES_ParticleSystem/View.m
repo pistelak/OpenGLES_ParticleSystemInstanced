@@ -34,7 +34,7 @@
             return nil;
 		}
         
-        self.drawableDepthFormat = GLKViewDrawableDepthFormat16;
+        self.drawableDepthFormat = GLKViewDrawableDepthFormat24;
         
         [self setContext:_context];
         [self setDelegate:_renderer];

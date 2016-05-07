@@ -14,10 +14,10 @@
 // Attribute Handles
 @property (readwrite) GLuint in_position;
 @property (readwrite) GLuint in_normal;
+@property (readwrite) GLuint in_modelMatrix;
 
 // Uniform Handles
 @property (readwrite) GLuint u_projectionMatrix;
 @property (readwrite) GLuint u_viewMatrix;
-@property (readwrite) GLuint u_modelMatrix;
 
 @end

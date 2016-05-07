@@ -103,10 +103,16 @@ typedef struct {
     glVertexAttribPointer(_shaderObject.in_normal, 3, GL_FLOAT, NO, stride, (const void *) offsetof(vertex_t, normal));
     glEnableVertexAttribArray(_shaderObject.in_normal);
     
-    glDrawElements([[self submesh] mode],
-                   [[self submesh] elementCount],
-                   [[self submesh] type],
-                   0);
+//    glDrawElements([[self submesh] mode],
+//                   [[self submesh] elementCount],
+//                   [[self submesh] type],
+//                   0);
+    
+    glDrawElementsInstanced([[self submesh] mode],
+                            [[self submesh] elementCount],
+                            [[self submesh] type],
+                            0, // indices
+                            9); // instance count
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

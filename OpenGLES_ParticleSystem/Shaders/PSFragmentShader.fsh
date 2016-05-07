@@ -1,7 +1,7 @@
 
 static const char* PSFragmentShader = GLSL(300 es,
                                            
-precision mediump float;
+precision highp float;
                                            
 // Const
 const vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0);
