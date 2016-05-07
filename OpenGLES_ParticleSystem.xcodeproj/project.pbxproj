@@ -1,0 +1,375 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		252F949A1CCCF198002DA54D /* ShaderBaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F94991CCCF198002DA54D /* ShaderBaseObject.m */; };
+		252F949D1CCCFA54002DA54D /* ParticleSystemShaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F949C1CCCFA54002DA54D /* ParticleSystemShaders.m */; };
+		252F94A01CCD07DC002DA54D /* OpenGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */; };
+		252F94A31CCE16AF002DA54D /* PSFragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 252F94A21CCE16AF002DA54D /* PSFragmentShader.fsh */; };
+		253DAF1D1CDC8DB1003BDB09 /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 253DAF1A1CDC8DB1003BDB09 /* sphere.obj */; };
+		253DAF231CDC8F57003BDB09 /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 253DAF221CDC8F57003BDB09 /* ModelObject.m */; };
+		253DAF261CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m in Sources */ = {isa = PBXBuildFile; fileRef = 253DAF251CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m */; };
+		255994EE1CB5526D000F41FB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 255994ED1CB5526D000F41FB /* main.m */; };
+		255994F11CB5526D000F41FB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 255994F01CB5526D000F41FB /* AppDelegate.m */; };
+		255994F91CB5526D000F41FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 255994F81CB5526D000F41FB /* Assets.xcassets */; };
+		255994FC1CB5526D000F41FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 255994FA1CB5526D000F41FB /* LaunchScreen.storyboard */; };
+		2559950B1CB5542B000F41FB /* ShaderProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 255995091CB5542B000F41FB /* ShaderProcessor.mm */; };
+		255995151CB5574D000F41FB /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = 255995141CB5574D000F41FB /* View.m */; };
+		2559951B1CB668FA000F41FB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2559951A1CB668FA000F41FB /* ViewController.m */; };
+		25E7AFF91CDDCFD500C501C1 /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 25E7AFF81CDDCFD500C501C1 /* cube.obj */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		252F94981CCCF198002DA54D /* ShaderBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderBaseObject.h; path = Shaders/ShaderBaseObject.h; sourceTree = "<group>"; };
+		252F94991CCCF198002DA54D /* ShaderBaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShaderBaseObject.m; path = Shaders/ShaderBaseObject.m; sourceTree = "<group>"; };
+		252F949B1CCCFA54002DA54D /* ParticleSystemShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleSystemShaders.h; path = Shaders/ParticleSystemShaders.h; sourceTree = "<group>"; };
+		252F949C1CCCFA54002DA54D /* ParticleSystemShaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParticleSystemShaders.m; path = Shaders/ParticleSystemShaders.m; sourceTree = "<group>"; };
+		252F949E1CCD07DC002DA54D /* OpenGLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenGLRenderer.h; path = ../OpenGLRenderer.h; sourceTree = "<group>"; };
+		252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OpenGLRenderer.m; path = ../OpenGLRenderer.m; sourceTree = "<group>"; };
+		252F94A11CCE169C002DA54D /* PSVertexShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PSVertexShader.vsh; path = Shaders/PSVertexShader.vsh; sourceTree = "<group>"; };
+		252F94A21CCE16AF002DA54D /* PSFragmentShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = PSFragmentShader.fsh; path = Shaders/PSFragmentShader.fsh; sourceTree = "<group>"; };
+		253DAF1A1CDC8DB1003BDB09 /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sphere.obj; path = sphere/sphere.obj; sourceTree = "<group>"; };
+		253DAF211CDC8F57003BDB09 /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
+		253DAF221CDC8F57003BDB09 /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
+		253DAF241CDCBAA7003BDB09 /* ShaderBaseObject+Binding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ShaderBaseObject+Binding.h"; path = "Shaders/ShaderBaseObject+Binding.h"; sourceTree = "<group>"; };
+		253DAF251CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ShaderBaseObject+Binding.m"; path = "Shaders/ShaderBaseObject+Binding.m"; sourceTree = "<group>"; };
+		253DAF281CDCDB51003BDB09 /* glUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glUtil.h; path = Shaders/glUtil.h; sourceTree = "<group>"; };
+		255994E91CB5526D000F41FB /* OpenGLES_ParticleSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGLES_ParticleSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		255994ED1CB5526D000F41FB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		255994EF1CB5526D000F41FB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		255994F01CB5526D000F41FB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		255994F81CB5526D000F41FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		255994FB1CB5526D000F41FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		255994FD1CB5526D000F41FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		255995081CB5542B000F41FB /* ShaderProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderProcessor.h; path = Shaders/ShaderProcessor.h; sourceTree = "<group>"; };
+		255995091CB5542B000F41FB /* ShaderProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ShaderProcessor.mm; path = Shaders/ShaderProcessor.mm; sourceTree = "<group>"; };
+		255995131CB5574D000F41FB /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
+		255995141CB5574D000F41FB /* View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = View.m; sourceTree = "<group>"; };
+		255995191CB668F9000F41FB /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		2559951A1CB668FA000F41FB /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		25E7AFF81CDDCFD500C501C1 /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		255994E61CB5526D000F41FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		255994E01CB5526D000F41FB = {
+			isa = PBXGroup;
+			children = (
+				255994EB1CB5526D000F41FB /* OpenGLES_ParticleSystem */,
+				255994EA1CB5526D000F41FB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		255994EA1CB5526D000F41FB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				255994E91CB5526D000F41FB /* OpenGLES_ParticleSystem.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		255994EB1CB5526D000F41FB /* OpenGLES_ParticleSystem */ = {
+			isa = PBXGroup;
+			children = (
+				2559950C1CB55432000F41FB /* Shaders */,
+				252F949E1CCD07DC002DA54D /* OpenGLRenderer.h */,
+				252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */,
+				253DAF211CDC8F57003BDB09 /* ModelObject.h */,
+				253DAF221CDC8F57003BDB09 /* ModelObject.m */,
+				255995131CB5574D000F41FB /* View.h */,
+				255995141CB5574D000F41FB /* View.m */,
+				255995191CB668F9000F41FB /* ViewController.h */,
+				2559951A1CB668FA000F41FB /* ViewController.m */,
+				253DAF1A1CDC8DB1003BDB09 /* sphere.obj */,
+				25E7AFF81CDDCFD500C501C1 /* cube.obj */,
+				255994EC1CB5526D000F41FB /* Supporting Files */,
+			);
+			path = OpenGLES_ParticleSystem;
+			sourceTree = "<group>";
+		};
+		255994EC1CB5526D000F41FB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				255994EF1CB5526D000F41FB /* AppDelegate.h */,
+				255994F01CB5526D000F41FB /* AppDelegate.m */,
+				255994F81CB5526D000F41FB /* Assets.xcassets */,
+				255994FA1CB5526D000F41FB /* LaunchScreen.storyboard */,
+				255994FD1CB5526D000F41FB /* Info.plist */,
+				255994ED1CB5526D000F41FB /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2559950C1CB55432000F41FB /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				2559950F1CB554BF000F41FB /* Utility */,
+				252F949B1CCCFA54002DA54D /* ParticleSystemShaders.h */,
+				252F949C1CCCFA54002DA54D /* ParticleSystemShaders.m */,
+				252F94A11CCE169C002DA54D /* PSVertexShader.vsh */,
+				252F94A21CCE16AF002DA54D /* PSFragmentShader.fsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
+		2559950F1CB554BF000F41FB /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				253DAF281CDCDB51003BDB09 /* glUtil.h */,
+				255995081CB5542B000F41FB /* ShaderProcessor.h */,
+				255995091CB5542B000F41FB /* ShaderProcessor.mm */,
+				253DAF241CDCBAA7003BDB09 /* ShaderBaseObject+Binding.h */,
+				253DAF251CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m */,
+				252F94981CCCF198002DA54D /* ShaderBaseObject.h */,
+				252F94991CCCF198002DA54D /* ShaderBaseObject.m */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		255994E81CB5526D000F41FB /* OpenGLES_ParticleSystem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 255995001CB5526D000F41FB /* Build configuration list for PBXNativeTarget "OpenGLES_ParticleSystem" */;
+			buildPhases = (
+				255994E51CB5526D000F41FB /* Sources */,
+				255994E61CB5526D000F41FB /* Frameworks */,
+				255994E71CB5526D000F41FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenGLES_ParticleSystem;
+			productName = OpenGLES_ParticleSystem;
+			productReference = 255994E91CB5526D000F41FB /* OpenGLES_ParticleSystem.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		255994E11CB5526D000F41FB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = ran;
+				TargetAttributes = {
+					255994E81CB5526D000F41FB = {
+						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = U52NXQ6R43;
+					};
+				};
+			};
+			buildConfigurationList = 255994E41CB5526D000F41FB /* Build configuration list for PBXProject "OpenGLES_ParticleSystem" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 255994E01CB5526D000F41FB;
+			productRefGroup = 255994EA1CB5526D000F41FB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				255994E81CB5526D000F41FB /* OpenGLES_ParticleSystem */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		255994E71CB5526D000F41FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25E7AFF91CDDCFD500C501C1 /* cube.obj in Resources */,
+				253DAF1D1CDC8DB1003BDB09 /* sphere.obj in Resources */,
+				255994FC1CB5526D000F41FB /* LaunchScreen.storyboard in Resources */,
+				252F94A31CCE16AF002DA54D /* PSFragmentShader.fsh in Resources */,
+				255994F91CB5526D000F41FB /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		255994E51CB5526D000F41FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2559951B1CB668FA000F41FB /* ViewController.m in Sources */,
+				255994F11CB5526D000F41FB /* AppDelegate.m in Sources */,
+				253DAF261CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m in Sources */,
+				255995151CB5574D000F41FB /* View.m in Sources */,
+				252F949D1CCCFA54002DA54D /* ParticleSystemShaders.m in Sources */,
+				255994EE1CB5526D000F41FB /* main.m in Sources */,
+				252F949A1CCCF198002DA54D /* ShaderBaseObject.m in Sources */,
+				2559950B1CB5542B000F41FB /* ShaderProcessor.mm in Sources */,
+				253DAF231CDC8F57003BDB09 /* ModelObject.m in Sources */,
+				252F94A01CCD07DC002DA54D /* OpenGLRenderer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		255994FA1CB5526D000F41FB /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				255994FB1CB5526D000F41FB /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		255994FE1CB5526D000F41FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		255994FF1CB5526D000F41FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		255995011CB5526D000F41FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = OpenGLES_ParticleSystem/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ran.OpenGLES-ParticleSystem";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		255995021CB5526D000F41FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = OpenGLES_ParticleSystem/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ran.OpenGLES-ParticleSystem";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		255994E41CB5526D000F41FB /* Build configuration list for PBXProject "OpenGLES_ParticleSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				255994FE1CB5526D000F41FB /* Debug */,
+				255994FF1CB5526D000F41FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		255995001CB5526D000F41FB /* Build configuration list for PBXNativeTarget "OpenGLES_ParticleSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				255995011CB5526D000F41FB /* Debug */,
+				255995021CB5526D000F41FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 255994E11CB5526D000F41FB /* Project object */;
+}
