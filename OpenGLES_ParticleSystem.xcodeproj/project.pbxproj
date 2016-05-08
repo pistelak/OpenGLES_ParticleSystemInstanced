@@ -12,7 +12,7 @@
 		252F94A01CCD07DC002DA54D /* OpenGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */; };
 		252F94A31CCE16AF002DA54D /* PSFragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 252F94A21CCE16AF002DA54D /* PSFragmentShader.fsh */; };
 		253DAF1D1CDC8DB1003BDB09 /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 253DAF1A1CDC8DB1003BDB09 /* sphere.obj */; };
-		253DAF231CDC8F57003BDB09 /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 253DAF221CDC8F57003BDB09 /* ModelObject.m */; };
+		253DAF231CDC8F57003BDB09 /* MeshObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 253DAF221CDC8F57003BDB09 /* MeshObject.m */; };
 		253DAF261CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m in Sources */ = {isa = PBXBuildFile; fileRef = 253DAF251CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m */; };
 		255994EE1CB5526D000F41FB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 255994ED1CB5526D000F41FB /* main.m */; };
 		255994F11CB5526D000F41FB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 255994F01CB5526D000F41FB /* AppDelegate.m */; };
@@ -34,8 +34,8 @@
 		252F94A11CCE169C002DA54D /* PSVertexShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = PSVertexShader.vsh; path = Shaders/PSVertexShader.vsh; sourceTree = "<group>"; };
 		252F94A21CCE16AF002DA54D /* PSFragmentShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = PSFragmentShader.fsh; path = Shaders/PSFragmentShader.fsh; sourceTree = "<group>"; };
 		253DAF1A1CDC8DB1003BDB09 /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sphere.obj; path = sphere/sphere.obj; sourceTree = "<group>"; };
-		253DAF211CDC8F57003BDB09 /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
-		253DAF221CDC8F57003BDB09 /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
+		253DAF211CDC8F57003BDB09 /* MeshObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshObject.h; sourceTree = "<group>"; };
+		253DAF221CDC8F57003BDB09 /* MeshObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeshObject.m; sourceTree = "<group>"; };
 		253DAF241CDCBAA7003BDB09 /* ShaderBaseObject+Binding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ShaderBaseObject+Binding.h"; path = "Shaders/ShaderBaseObject+Binding.h"; sourceTree = "<group>"; };
 		253DAF251CDCBAA7003BDB09 /* ShaderBaseObject+Binding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ShaderBaseObject+Binding.m"; path = "Shaders/ShaderBaseObject+Binding.m"; sourceTree = "<group>"; };
 		253DAF281CDCDB51003BDB09 /* glUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glUtil.h; path = Shaders/glUtil.h; sourceTree = "<group>"; };
@@ -88,8 +88,8 @@
 				2559950C1CB55432000F41FB /* Shaders */,
 				252F949E1CCD07DC002DA54D /* OpenGLRenderer.h */,
 				252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */,
-				253DAF211CDC8F57003BDB09 /* ModelObject.h */,
-				253DAF221CDC8F57003BDB09 /* ModelObject.m */,
+				253DAF211CDC8F57003BDB09 /* MeshObject.h */,
+				253DAF221CDC8F57003BDB09 /* MeshObject.m */,
 				255995131CB5574D000F41FB /* View.h */,
 				255995141CB5574D000F41FB /* View.m */,
 				255995191CB668F9000F41FB /* ViewController.h */,
@@ -221,7 +221,7 @@
 				255994EE1CB5526D000F41FB /* main.m in Sources */,
 				252F949A1CCCF198002DA54D /* ShaderBaseObject.m in Sources */,
 				2559950B1CB5542B000F41FB /* ShaderProcessor.mm in Sources */,
-				253DAF231CDC8F57003BDB09 /* ModelObject.m in Sources */,
+				253DAF231CDC8F57003BDB09 /* MeshObject.m in Sources */,
 				252F94A01CCD07DC002DA54D /* OpenGLRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

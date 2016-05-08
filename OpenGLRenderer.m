@@ -11,7 +11,7 @@
 
 #import "ParticleSystemShaders.h"
 
-#import "ModelObject.h" 
+#import "meshObject.h" 
 
 const unsigned kMaximumNumberOfParticles = 1000;
 const unsigned kNumberOfInflightBuffers = 3;
@@ -31,7 +31,7 @@ const unsigned kNumberOfInflightBuffers = 3;
     GLKMatrix4 _viewMatrix;
     
     ParticleSystemShaders *_shaderObject;
-    ModelObject *_sphere;
+    meshObject *_sphere;
    
     GLsync _fences[kNumberOfInflightBuffers];
     GLuint _modelMatricesBuffers[kNumberOfInflightBuffers];
@@ -54,7 +54,7 @@ const unsigned kNumberOfInflightBuffers = 3;
         }
         
         _shaderObject = [[ParticleSystemShaders alloc] init];
-        _sphere = [[ModelObject alloc] initWithModelName:@"sphere" andShaderObject:_shaderObject];
+        _sphere = [[meshObject alloc] initWithModelName:@"sphere" andShaderObject:_shaderObject];
         
         [self updateCameraWithTime:0];
         [self prepareToDraw];

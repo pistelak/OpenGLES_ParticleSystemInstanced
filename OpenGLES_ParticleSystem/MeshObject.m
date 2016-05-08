@@ -1,17 +1,17 @@
 //
-//  ModelObject.m
+//  meshObject.m
 //  OpenGLES_ParticleSystem
 //
 //  Created by Radek Pistelak on 5/6/16.
 //  Copyright © 2016 ran. All rights reserved.
 //
 
-#import "ModelObject.h"
+#import "meshObject.h"
 #import "Shaders/glUtil.h"
 
 
 
-@implementation ModelObject
+@implementation meshObject
 {
     GLuint _vao;
     NSArray<GLKMesh *> *_meshes;

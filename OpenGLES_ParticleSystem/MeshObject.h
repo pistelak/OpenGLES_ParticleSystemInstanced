@@ -1,5 +1,5 @@
 //
-//  ModelObject.h
+//  meshObject.h
 //  OpenGLES_ParticleSystem
 //
 //  Created by Radek Pistelak on 5/6/16.
@@ -14,7 +14,7 @@
 #import <OpenGLES/ES3/gl.h>
 #import <ModelIO/ModelIO.h>
 
-@interface ModelObject : NSObject
+@interface meshObject : NSObject
 
 - (instancetype) init NS_UNAVAILABLE;
 - (instancetype) initWithModelName:(NSString *) modelName andShaderObject:(ParticleSystemShaders *) shaderObject;
