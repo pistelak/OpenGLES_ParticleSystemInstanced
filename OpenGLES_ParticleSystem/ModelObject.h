@@ -19,7 +19,7 @@
 - (instancetype) init NS_UNAVAILABLE;
 - (instancetype) initWithModelName:(NSString *) modelName andShaderObject:(ParticleSystemShaders *) shaderObject;
 
-- (void) draw;
+- (void) drawInstanced:(int32_t) particleCount;
 
 @property (nonatomic, copy, readonly) NSString * modelName;
 

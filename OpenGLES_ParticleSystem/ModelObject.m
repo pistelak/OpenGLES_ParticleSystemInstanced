@@ -90,7 +90,7 @@ typedef struct {
 #pragma mark -
 #pragma mark Drawing
 
-- (void) draw
+- (void) drawInstanced:(int32_t) numberOfParticles
 {
     glBindBuffer(GL_ARRAY_BUFFER, [[self vertexBuffer] glBufferName]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, [[self elementBuffer] glBufferName]);
@@ -107,7 +107,8 @@ typedef struct {
                             [[self submesh] elementCount],
                             [[self submesh] type],
                             0, // indices
-                            9); // instance count
+                            numberOfParticles);
+    
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

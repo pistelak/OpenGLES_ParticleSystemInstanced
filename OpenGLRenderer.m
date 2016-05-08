@@ -13,7 +13,7 @@
 
 #import "ModelObject.h" 
 
-const unsigned kMaximumNumberOfObjects = 1000;
+const unsigned kMaximumNumberOfParticles = 1000;
 const unsigned kNumberOfInflightBuffers = 3;
 
 @implementation OpenGLRenderer
@@ -38,21 +38,22 @@ const unsigned kNumberOfInflightBuffers = 3;
     GLuint _vertexArrayObjects[kNumberOfInflightBuffers];
     
     unsigned _currentBufferIndex;
+    unsigned _currentNumberOfParticles;
 }
 
 - (instancetype) init
 {
     self = [super init];
     if (self) {
-        
+
         _currentBufferIndex = 0;
+        _currentNumberOfParticles = 0;
         
-        _fences[0] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-        _fences[1] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-        _fences[2] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
+            _fences[i] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        }
         
         _shaderObject = [[ParticleSystemShaders alloc] init];
-        
         _sphere = [[ModelObject alloc] initWithModelName:@"sphere" andShaderObject:_shaderObject];
         
         [self updateCameraWithTime:0];
@@ -62,14 +63,20 @@ const unsigned kNumberOfInflightBuffers = 3;
     return self;
 }
 
+//- (void) increaseNumberOfParticles
+//{
+//    if (_currentNumberOfParticles < kMaximumNumberOfParticles) {
+//        _currentNumberOfParticles += 100;
+//    }
+//}
+
 - (void) resizeWithWidth:(GLuint)width andHeight:(GLuint)height
 {
     _width = width;
     _height = height;
     
     glViewport(0, 0, _width, _height);
-    
-    glUniformMatrix4fv(_shaderObject.u_projectionMatrix, 1, NO, [self projectionMatrix].m);
+    glUniformMatrix4fv(_shaderObject.u_projectionMatrix, 1, NO, projectionMatrix(width, height).m);
 }
 
 - (void) prepareToDraw
@@ -80,11 +87,8 @@ const unsigned kNumberOfInflightBuffers = 3;
 
     glEnable(GL_DEPTH_TEST);
     
-    [self createVertexArraysObjects];
-}
-
-- (void) createVertexArraysObjects
-{
+    // Vertex array objects
+    const GLuint modelMatrixAttributePosition = _shaderObject.in_modelMatrix;
     for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
         
         glGenVertexArrays(1, &_vertexArrayObjects[i]);
@@ -92,24 +96,21 @@ const unsigned kNumberOfInflightBuffers = 3;
         
         glGenBuffers(1, &_modelMatricesBuffers[i]);
         glBindBuffer(GL_ARRAY_BUFFER, _modelMatricesBuffers[i]);
-        glBufferData(GL_ARRAY_BUFFER, kMaximumNumberOfObjects * sizeof(GLKMatrix4), NULL, GL_STREAM_DRAW);
-        
-        const GLuint modelMatrixAttributePosition = _shaderObject.in_modelMatrix;
+        glBufferData(GL_ARRAY_BUFFER, kMaximumNumberOfParticles * sizeof(GLKMatrix4), NULL, GL_STREAM_DRAW);
         
         for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
             glEnableVertexAttribArray(positionIndex);
             glVertexAttribPointer(positionIndex, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void *)(sizeof(float) * (positionIndex * 4)));
             glVertexAttribDivisor(positionIndex, 1);
         }
-        
+    }
+    
+    for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
+        glDisableVertexAttribArray(positionIndex);
     }
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glDisableVertexAttribArray(_shaderObject.in_modelMatrix);
-    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+1);
-    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+2);
-    glDisableVertexAttribArray(_shaderObject.in_modelMatrix+3);
 }
 
 #pragma mark -
@@ -119,15 +120,15 @@ const unsigned kNumberOfInflightBuffers = 3;
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    // update uniforms
+    // Update uniforms.
     glUniformMatrix4fv(_shaderObject.u_viewMatrix, 1, NO, _viewMatrix.m);
     
-    // update model matrices
-    [self updateAndDraw];
-}
-
-- (BOOL) updateAndDraw
-{
+    /**
+     * Update model matrices and draw.
+     */
+    
+    _currentNumberOfParticles = 9;
+    
     static GLKMatrix4 firstModelMatrices[9];
     
     firstModelMatrices[0] = GLKMatrix4Identity;
@@ -204,61 +205,62 @@ const unsigned kNumberOfInflightBuffers = 3;
     secondModelMatrices[8] = GLKMatrix4Scale(secondModelMatrices[8], 0.1f, 0.1f, 0.1f);
     secondModelMatrices[8] = GLKMatrix4Translate(secondModelMatrices[8], 3.f, 2.f, 0);
     
-    BOOL success;
-    
-    GLuint currentBuffer = _modelMatricesBuffers[_currentBufferIndex];
-    
     GLKMatrix4 *newData;
-    
     if (_currentBufferIndex == 0) {
         newData = &secondModelMatrices[0];
     } else {
         newData = &firstModelMatrices[0];
     }
     
-    GLuint newDataLength = 9 * sizeof(GLKMatrix4);
-    GLuint length = kMaximumNumberOfObjects * sizeof(GLKMatrix4);
+    GLuint newDataLength = _currentNumberOfParticles * sizeof(GLKMatrix4);
+    GLuint bufferLength = kMaximumNumberOfParticles * sizeof(GLKMatrix4);
     
-    glBindBuffer(GL_ARRAY_BUFFER, currentBuffer);
+    assert(newDataLength < bufferLength);
     
-    GetGLError();
-    
-    void *old_data = glMapBufferRange(GL_ARRAY_BUFFER, 0, length,
-                                      GL_MAP_WRITE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT |
-                                      GL_MAP_UNSYNCHRONIZED_BIT );
-    
-    GetGLError();
-    
+    // Wait for fence.
     glClientWaitSync(_fences[_currentBufferIndex], GL_SYNC_FLUSH_COMMANDS_BIT, GL_TIMEOUT_IGNORED);
-    
     glDeleteSync(_fences[_currentBufferIndex]);
     
-    GetGLError();
+    updateDataInArrayBuffer(_modelMatricesBuffers[_currentBufferIndex],
+                            bufferLength,
+                            newData,
+                            newDataLength);
     
-    // Modify buffer, flush, and unmap.
-    memcpy(old_data, newData, newDataLength);
+    // Draw.
+    glBindVertexArray(_vertexArrayObjects[_currentBufferIndex]);
     
-    GetGLError();
+    [_sphere drawInstanced:_currentNumberOfParticles];
     
-    glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, length);
+    glBindVertexArray(0);
     
-    GetGLError();
-    
-    success = glUnmapBuffer(GL_ARRAY_BUFFER);
-    
-    GetGLError();
-
-
-    GetGLError();
-    
-    [_sphere draw];
-    
-    _currentBufferIndex = (_currentBufferIndex + 1) % kNumberOfInflightBuffers;
-    
-    // Create a fence that the next frame will wait for.
+    // New fence for this frame.
     _fences[_currentBufferIndex] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     
-    return success;
+    // Update buffer index.
+    _currentBufferIndex = (_currentBufferIndex + 1) % kNumberOfInflightBuffers;
+    
+}
+
+static inline BOOL updateDataInArrayBuffer(const GLuint buffer,
+                                           const GLuint bufferLength,
+                                           const void *newData,
+                                           const size_t newDataSize)
+{
+    const GLuint kOffset = 0;
+    
+    // Bind and map buffer.
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    
+    void *dst = glMapBufferRange(GL_ARRAY_BUFFER, kOffset, bufferLength,
+                                 GL_MAP_WRITE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT |
+                                 GL_MAP_UNSYNCHRONIZED_BIT);
+    
+    // Modify buffer, flush, and unmap.
+    memcpy(dst, newData, newDataSize);
+    
+    glFlushMappedBufferRange(GL_ARRAY_BUFFER, kOffset, bufferLength);
+    
+    return glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
@@ -273,25 +275,27 @@ const unsigned kNumberOfInflightBuffers = 3;
     _viewMatrix = lookAt(_eyePosition);
 }
 
-
 #pragma mark -
 #pragma mark MVP matrices
 
-- (GLKMatrix4) projectionMatrix
+static inline GLKMatrix4 projectionMatrix(GLuint width, GLuint height)
 {
-    const GLfloat fov = 45.f;
-    const GLfloat aspect = _width/_height;
-    const GLfloat nearZ = 0.1f;
-    const GLfloat farZ = 100.f;
+    static const GLfloat fov = 45.f;
+    const GLfloat aspect = width/height;
+    static const GLfloat nearZ = 0.1f;
+    static const GLfloat farZ = 100.f;
     
     return GLKMatrix4MakePerspective(GLKMathDegreesToRadians(fov), aspect, nearZ, farZ);
 }
 
 static inline GLKMatrix4 lookAt(GLKVector3 cameraPosition)
 {
+    static const GLKVector3 kCenter = {0.0f, 0.0f, 0.0f};
+    static const GLKVector3 kUp     = {0.0f, 1.0f, 0.0f};
+    
     return GLKMatrix4MakeLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-                                0.f, 0.f, 0.f,
-                                0.f, 1.f, 0.f);
+                                kCenter.x, kCenter.y, kCenter.z,
+                                kUp.x, kUp.y, kUp.z);
 }
 
 static inline GLKMatrix4 modelMatrixWithPositionAndScale(GLKVector3 position, float scale)
