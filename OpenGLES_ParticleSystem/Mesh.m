@@ -1,17 +1,19 @@
 //
-//  ModelObject.m
+//  Mesh.m
 //  OpenGLES_ParticleSystem
 //
 //  Created by Radek Pistelak on 5/6/16.
 //  Copyright © 2016 ran. All rights reserved.
 //
 
-#import "ModelObject.h"
+#import "Mesh.h"
 #import "Shaders/glUtil.h"
 
+#import <GLKit/GLKit.h>
+#import <OpenGLES/ES3/gl.h>
+#import <ModelIO/ModelIO.h>
 
-
-@implementation ModelObject
+@implementation Mesh
 {
     GLuint _vao;
     NSArray<GLKMesh *> *_meshes;
@@ -78,10 +80,7 @@
     return modelIOVertexDesc;
 }
 
-/** 
- *  OpenGL vertex descriptor ...
- */
- 
+// OpenGL vertex descriptor
 typedef struct {
     GLfloat position[3];
     GLfloat normal[3];
@@ -90,7 +89,7 @@ typedef struct {
 #pragma mark -
 #pragma mark Drawing
 
-- (void) drawInstanced:(int32_t) numberOfParticles
+- (void) drawInstanced:(int32_t) instaceCount
 {
     glBindBuffer(GL_ARRAY_BUFFER, [[self vertexBuffer] glBufferName]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, [[self elementBuffer] glBufferName]);
@@ -107,8 +106,7 @@ typedef struct {
                             [[self submesh] elementCount],
                             [[self submesh] type],
                             0, // indices
-                            numberOfParticles);
-    
+                            instaceCount);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

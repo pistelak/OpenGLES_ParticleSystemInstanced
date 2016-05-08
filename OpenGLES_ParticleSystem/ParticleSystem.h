@@ -13,35 +13,13 @@
 #import <OpenGLES/ES3/gl.h>
 
 #import "ParticleSystemShaders.h"
-
-typedef struct {
-    float lifetime;
-    GLKVector3 startPosition;
-    GLKVector3 endPosition;
-} particle_t;
+#import "Mesh.h"
 
 @interface ParticleSystem : NSObject
 
-- (instancetype) initWithParticleCount:(NSInteger) particleCount
-                          shaderObject:(ShaderBaseObject *) shaderObject
-                           andLifetime:(float) lifetime;
+- (instancetype) init NS_UNAVAILABLE;
+- (instancetype) initWithMesh:(Mesh *) mesh andShader:(ParticleSystemShaders *) shaderObject;
 
-@property (nonatomic, strong) ParticleSystemShaders *shaderObject;
-
-@property (nonatomic, assign) NSInteger particleCount;
-
-@property (nonatomic, assign) float time;
-@property (nonatomic, assign) float lifetime;
-@property (nonatomic, assign) GLKVector3 centerPosition; // random
-@property (nonatomic, assign) GLKVector4 particleColor; // random
-
-@property (nonatomic, assign) GLKVector2 drawableSize;
-
-@property (nonatomic, strong) GLKTextureInfo *spriteTexture;
-
-- (BOOL) loadTextureFromFilePath:(NSString *) filePath NS_UNAVAILABLE;
-
-- (void) drawWithProjectionMatrix:(GLKMatrix4) projectionMatrix eyePosition:(GLKVector3) eyePosition andFov:(float) fov;
-- (void) updateWithTime:(NSTimeInterval) deltaTime;
+- (void) draw;
 
 @end
