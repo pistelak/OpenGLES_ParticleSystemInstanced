@@ -9,7 +9,7 @@
 #import "View.h"
 #import "OpenGLRenderer.h"
 
-#import "meshObject.h"
+#import "Mesh.h"
 
 @interface View ()
 {

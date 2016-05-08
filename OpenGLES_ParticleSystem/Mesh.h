@@ -1,5 +1,5 @@
 //
-//  meshObject.h
+//  Mesh.h
 //  OpenGLES_ParticleSystem
 //
 //  Created by Radek Pistelak on 5/6/16.
@@ -7,19 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "Shaders/ParticleSystemShaders.h"
 
-#import <GLKit/GLKit.h>
-#import <OpenGLES/ES3/gl.h>
-#import <ModelIO/ModelIO.h>
-
-@interface meshObject : NSObject
+@interface Mesh : NSObject
 
 - (instancetype) init NS_UNAVAILABLE;
 - (instancetype) initWithModelName:(NSString *) modelName andShaderObject:(ParticleSystemShaders *) shaderObject;
 
-- (void) drawInstanced:(int32_t) particleCount;
+- (void) drawInstanced:(int32_t) instaceCount;
 
 @property (nonatomic, copy, readonly) NSString * modelName;
 
