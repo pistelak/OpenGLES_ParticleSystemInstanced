@@ -15,11 +15,14 @@
 #import "ParticleSystemShaders.h"
 #import "Mesh.h"
 
+
 @interface ParticleSystem : NSObject
 
 - (instancetype) init NS_UNAVAILABLE;
 - (instancetype) initWithMesh:(Mesh *) mesh andShader:(ParticleSystemShaders *) shaderObject;
 
 - (void) draw;
+
+- (NSUInteger) currentNumberOfParticles;
 
 @end

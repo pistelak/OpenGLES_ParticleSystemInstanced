@@ -1,6 +1,5 @@
 // Vertex shader
 
-// AAPL metal sample code
 
 const char* PSVertexShader = GLSL(300 es,
 
@@ -27,6 +26,8 @@ void main(void)
 {
     mat4 modelViewMatrix = u_viewMatrix * in_modelMatrix;
     mat4 mvpMatrix = u_projectionMatrix * modelViewMatrix;
+    
+    // AAPL metal sample code
     
     // Calculate the position of the object from the perspective of the camera
     vec4 vertexPositionModelSpace = vec4(in_position, 1.0);

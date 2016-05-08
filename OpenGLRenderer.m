@@ -13,12 +13,19 @@
 #import "Mesh.h"
 #import "ParticleSystem.h"
 
+#import "Math.h"
+
 @implementation OpenGLRenderer
 {
     /*
      Using ivars instead of properties to avoid any performance penalities with
      the Objective-C runtime.
      */
+    
+    BOOL _firstDrawOccurred;
+    CFTimeInterval _timeSinceLastDraw;
+    CFTimeInterval _timeSinceLastDrawPreviousTime;
+    NSUInteger _numberOfRenderedParticles;
     
     CGFloat _width;
     CGFloat _height;
@@ -36,6 +43,8 @@
 {
     self = [super init];
     if (self) {
+        
+        _firstDrawOccurred = NO;
 
         _shaderObject = [[ParticleSystemShaders alloc] init];
         _sphere = [[Mesh alloc] initWithModelName:@"sphere" andShaderObject:_shaderObject];
@@ -71,12 +80,29 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
+    if(!_firstDrawOccurred) {
+        _timeSinceLastDraw             = 0.0;
+        _timeSinceLastDrawPreviousTime = CACurrentMediaTime();
+        _firstDrawOccurred              = YES;
+    }
+    else {
+        CFTimeInterval currentTime = CACurrentMediaTime();
+        _timeSinceLastDraw = currentTime - _timeSinceLastDrawPreviousTime;
+        _timeSinceLastDrawPreviousTime = currentTime;
+        
+        NSLog(@"Particles: %lu - frameTime: %f", _numberOfRenderedParticles, _timeSinceLastDraw);
+    }
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Update uniforms.
     glUniformMatrix4fv(_shaderObject.u_viewMatrix, 1, NO, _viewMatrix.m);
     
+    _numberOfRenderedParticles = [_particleSystem currentNumberOfParticles];
+    
     [_particleSystem draw];
+    
+    _timeSinceLastDraw = CFAbsoluteTimeGetCurrent();
 }
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
@@ -94,25 +120,6 @@
 #pragma mark -
 #pragma mark MVP matrices
 
-static inline GLKMatrix4 projectionMatrix(GLuint width, GLuint height)
-{
-    static const GLfloat fov = 45.f;
-    const GLfloat aspect = width/height;
-    static const GLfloat nearZ = 0.1f;
-    static const GLfloat farZ = 100.f;
-    
-    return GLKMatrix4MakePerspective(GLKMathDegreesToRadians(fov), aspect, nearZ, farZ);
-}
-
-static inline GLKMatrix4 lookAt(GLKVector3 cameraPosition)
-{
-    static const GLKVector3 kCenter = {0.0f, 0.0f, 0.0f};
-    static const GLKVector3 kUp     = {0.0f, 1.0f, 0.0f};
-    
-    return GLKMatrix4MakeLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-                                kCenter.x, kCenter.y, kCenter.z,
-                                kUp.x, kUp.y, kUp.z);
-}
 
 
 @end

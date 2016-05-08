@@ -24,6 +24,8 @@ float saturate(float val) {
                                            
 void main()
 {
+    // AAPL metal sample code
+    
     // Get the ambient color (the color that represents all the light that bounces around
     // the scene and illuminates the object).
     vec4 ambient_color = materialAmbientColor;

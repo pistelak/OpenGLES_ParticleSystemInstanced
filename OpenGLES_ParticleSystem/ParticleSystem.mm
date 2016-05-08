@@ -8,6 +8,8 @@
 
 #import "ParticleSystem.h"
 
+#import "Math.h"
+
 #import <vector>
 
 const unsigned kMaximumNumberOfParticles = 10000;
@@ -29,11 +31,6 @@ typedef struct {
 {
     std::vector<particle_t> _particles;
     
-    /**
-     * @brief Pocet castic ktere budou vykresleny na obrazovku.
-     * Nepouzivat jako pocet instanci, protoze nemusi odpovidat skutecnemu poctu castic.
-     * Promenna je automaticky kazdou vterinu navysena pomoci timeru.
-     */
     uint32_t _particleCount;
     uint16_t _particleBatchSize;
    
@@ -57,7 +54,7 @@ typedef struct {
         _mesh = mesh;
         
         _particleCount = 0;
-        _particleBatchSize = 50;
+        _particleBatchSize = 300;
         
         for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
             _fences[i] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
@@ -78,7 +75,7 @@ typedef struct {
 
 - (void) increaseParticleCount:(NSTimer *) timer
 {
-    if (_particleCount < kMaximumNumberOfParticles) {
+    if ((_particleCount + _particleBatchSize) < kMaximumNumberOfParticles) {
         _particleCount += _particleBatchSize;
     } else {
         [_timer invalidate];
@@ -220,11 +217,11 @@ static inline particle_t particleWithInitialPosition(void)
 {
     particle_t newParticle;
     
-    // inspired by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
     
     newParticle.position = GLKVector3Make(0.f, 0.f, 0.f);
     newParticle.scale = 0.05f;
     
+    // inspired by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
     newParticle.vec = ballRandomGLKVector3(0.5f);
     newParticle.vec.y += 2.f;
     
@@ -241,56 +238,9 @@ static inline GLKMatrix4 particleModelMatrix(particle_t *particle)
 }
 
 #pragma mark -
-#pragma mark Math 
 
-static inline GLKVector3 ballRandomGLKVector3(float radius)
-{
-    // inspired by OpenGL Math
-    GLKVector3 result;
-    float length;
-    
-    do {
-        result = randomGLKVector3(0, radius, -radius/2);
-        length = GLKVector3Length(result);
-        
-    } while (length > radius);
-    
-    return result;
+- (NSUInteger) currentNumberOfParticles {
+    return _particles.size();
 }
-
-static inline float randomNumber(float min, float max, float offset)
-{
-    float pseudoRandomNumber = min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min)));
-    return pseudoRandomNumber + offset;
-}
-
-static inline GLKVector3 randomGLKVector3(float min, float max, float offset)
-{
-    return GLKVector3Make(randomNumber(min, max, offset),
-                          randomNumber(min, max, offset),
-                          randomNumber(min, max, offset));
-}
-
-- (float) randomNumberBetweenMin:(float) min andMax:(float) max withOffset:(float) offset
-{
-    float pseudoRandomNumber = min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min)));
-    return pseudoRandomNumber + offset;
-}
-
-- (GLKVector3) GLKVector3WithRandomNumbersInIntervalMin:(float) min andMax:(float) max withOffset:(float) offset
-{
-    return GLKVector3Make([self randomNumberBetweenMin:min andMax:max withOffset:offset],
-                          [self randomNumberBetweenMin:min andMax:max withOffset:offset],
-                          [self randomNumberBetweenMin:min andMax:max withOffset:offset]);
-    
-}
-//
-//- (GLKVector4) GLKVector4WithRandomNumbersInIntervalMin:(float) min andMax:(float) max withOffset:(float) offset
-//{
-//    return GLKVector4Make([self randomNumberBetweenMin:min andMax:max withOffset:offset],
-//                          [self randomNumberBetweenMin:min andMax:max withOffset:offset],
-//                          [self randomNumberBetweenMin:min andMax:max withOffset:offset],
-//                          [self randomNumberBetweenMin:min andMax:max withOffset:offset]);
-//}
 
 @end
