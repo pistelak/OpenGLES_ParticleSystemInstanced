@@ -10,12 +10,13 @@
 
 #import <vector>
 
-const unsigned kMaximumNumberOfParticles = 100;
+const unsigned kMaximumNumberOfParticles = 10000;
 const unsigned kNumberOfInflightBuffers = 3;
 
 typedef struct {
     GLKVector3 position;
     float scale;
+    GLKVector3 vec;
 } particle_t;
 
 @interface ParticleSystem ()
@@ -56,7 +57,7 @@ typedef struct {
         _mesh = mesh;
         
         _particleCount = 0;
-        _particleBatchSize = 10;
+        _particleBatchSize = 50;
         
         for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
             _fences[i] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
@@ -97,21 +98,21 @@ typedef struct {
         
         glGenBuffers(1, &_modelMatricesBuffers[i]);
         glBindBuffer(GL_ARRAY_BUFFER, _modelMatricesBuffers[i]);
-        glBufferData(GL_ARRAY_BUFFER, kMaximumNumberOfParticles * sizeof(GLKMatrix4), NULL, GL_STREAM_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, kMaximumNumberOfParticles * sizeof(GLKMatrix4), NULL, GL_DYNAMIC_DRAW);
         
         for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
             glEnableVertexAttribArray(positionIndex);
             glVertexAttribPointer(positionIndex, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void *)(sizeof(float) * (positionIndex * 4)));
             glVertexAttribDivisor(positionIndex, 1);
         }
-    }
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     
-    for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
-        glDisableVertexAttribArray(positionIndex);
+        for (unsigned positionIndex = modelMatrixAttributePosition; positionIndex < modelMatrixAttributePosition + 4; ++positionIndex) {
+            glDisableVertexAttribArray(positionIndex);
+        }
     }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 - (void) draw
@@ -192,14 +193,24 @@ static inline BOOL updateDataInArrayBuffer(const GLuint buffer,
     }
     
     // adjust particle position
+    const GLfloat kFrameTime = 1.0f / 60.0f;
     currentNumberOfParticles = (uint32_t) _particles.size();
     
     for (uint32_t i = 0; i < currentNumberOfParticles; ++i) {
         particle_t *particle= &_particles.at(i);
         
-        particle->position.y = particle->position.y + .001f;
+        // insipred by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
+        particle->vec.y -= 1 * kFrameTime;
+        particle->position = GLKVector3Add(particle->position, GLKVector3MultiplyScalar(particle->vec, kFrameTime));
+        
+        if (particle->position.y < -2.0f) {
+            particle->position.y = -1.8f;
+            particle->vec.y = -particle->vec.y;
+            particle->vec = GLKVector3MultiplyScalar(particle->vec, 0.8f);
+        }
         
         modelMatrices.push_back(particleModelMatrix(particle));
+        
     }
     
     return modelMatrices;
@@ -209,8 +220,13 @@ static inline particle_t particleWithInitialPosition(void)
 {
     particle_t newParticle;
     
-    newParticle.position = GLKVector3Make(0, 0, 0);
-    newParticle.scale = 0.1f;
+    // inspired by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
+    
+    newParticle.position = GLKVector3Make(0.f, 0.f, 0.f);
+    newParticle.scale = 0.05f;
+    
+    newParticle.vec = ballRandomGLKVector3(0.5f);
+    newParticle.vec.y += 2.f;
     
     return newParticle;
 }
@@ -227,20 +243,47 @@ static inline GLKMatrix4 particleModelMatrix(particle_t *particle)
 #pragma mark -
 #pragma mark Math 
 
+static inline GLKVector3 ballRandomGLKVector3(float radius)
+{
+    // inspired by OpenGL Math
+    GLKVector3 result;
+    float length;
+    
+    do {
+        result = randomGLKVector3(0, radius, -radius/2);
+        length = GLKVector3Length(result);
+        
+    } while (length > radius);
+    
+    return result;
+}
+
+static inline float randomNumber(float min, float max, float offset)
+{
+    float pseudoRandomNumber = min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min)));
+    return pseudoRandomNumber + offset;
+}
+
+static inline GLKVector3 randomGLKVector3(float min, float max, float offset)
+{
+    return GLKVector3Make(randomNumber(min, max, offset),
+                          randomNumber(min, max, offset),
+                          randomNumber(min, max, offset));
+}
 
 - (float) randomNumberBetweenMin:(float) min andMax:(float) max withOffset:(float) offset
 {
     float pseudoRandomNumber = min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min)));
     return pseudoRandomNumber + offset;
 }
-//
-//- (GLKVector3) GLKVector3WithRandomNumbersInIntervalMin:(float) min andMax:(float) max withOffset:(float) offset
-//{
-//    return GLKVector3Make([self randomNumberBetweenMin:min andMax:max withOffset:offset],
-//                          [self randomNumberBetweenMin:min andMax:max withOffset:offset],
-//                          [self randomNumberBetweenMin:min andMax:max withOffset:offset]);
-//    
-//}
+
+- (GLKVector3) GLKVector3WithRandomNumbersInIntervalMin:(float) min andMax:(float) max withOffset:(float) offset
+{
+    return GLKVector3Make([self randomNumberBetweenMin:min andMax:max withOffset:offset],
+                          [self randomNumberBetweenMin:min andMax:max withOffset:offset],
+                          [self randomNumberBetweenMin:min andMax:max withOffset:offset]);
+    
+}
 //
 //- (GLKVector4) GLKVector4WithRandomNumbersInIntervalMin:(float) min andMax:(float) max withOffset:(float) offset
 //{
