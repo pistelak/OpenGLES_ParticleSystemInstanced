@@ -1,18 +1,19 @@
-// Vertex shader
-
+//
+//  Apple sample code
+//
 
 const char* PSVertexShader = GLSL(300 es,
 
 precision highp float;
                                   
 // Uniforms
-uniform highp mat4 u_projectionMatrix;
-uniform highp mat4 u_viewMatrix;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_viewMatrix;
 
 // Attributes
-in highp vec3 in_position;
-in highp vec3 in_normal;
-in highp mat4 in_modelMatrix;
+in vec3 in_position;
+in vec3 in_normal;
+in mat4 in_modelMatrix;
                                   
 // Out
 out vec3 v_normalCameraSpace;
@@ -26,8 +27,6 @@ void main(void)
 {
     mat4 modelViewMatrix = u_viewMatrix * in_modelMatrix;
     mat4 mvpMatrix = u_projectionMatrix * modelViewMatrix;
-    
-    // AAPL metal sample code
     
     // Calculate the position of the object from the perspective of the camera
     vec4 vertexPositionModelSpace = vec4(in_position, 1.0);

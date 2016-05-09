@@ -56,6 +56,7 @@
 		255995141CB5574D000F41FB /* View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = View.m; sourceTree = "<group>"; };
 		255995191CB668F9000F41FB /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2559951A1CB668FA000F41FB /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		258B0DBF1CE12AA6006DD5D7 /* Particles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Particles.h; sourceTree = "<group>"; };
 		25E7AFF81CDDCFD500C501C1 /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +116,7 @@
 				25563BA41CDFE102006971F2 /* Geometry */,
 				252F949E1CCD07DC002DA54D /* OpenGLRenderer.h */,
 				252F949F1CCD07DC002DA54D /* OpenGLRenderer.m */,
+				258B0DBF1CE12AA6006DD5D7 /* Particles.h */,
 				25563BA01CDF6640006971F2 /* ParticleSystem.h */,
 				25563BA11CDF6640006971F2 /* ParticleSystem.mm */,
 				25563BA61CDFE229006971F2 /* Math.h */,

@@ -9,17 +9,9 @@
 #import "ParticleSystem.h"
 
 #import "Math.h"
+#import "Particles.h"
 
-#import <vector>
-
-const unsigned kMaximumNumberOfParticles = 10000;
 const unsigned kNumberOfInflightBuffers = 3;
-
-typedef struct {
-    GLKVector3 position;
-    float scale;
-    GLKVector3 vec;
-} particle_t;
 
 @interface ParticleSystem ()
 
@@ -54,7 +46,7 @@ typedef struct {
         _mesh = mesh;
         
         _particleCount = 0;
-        _particleBatchSize = 300;
+        _particleBatchSize = kBatchSize;
         
         for (unsigned i = 0; i < kNumberOfInflightBuffers; ++i) {
             _fences[i] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
@@ -114,7 +106,7 @@ typedef struct {
 
 - (void) draw
 {
-    std::vector<GLKMatrix4> modelMatrices = [self modelMatrices];
+    std::vector<GLKMatrix4> modelMatrices = updateParticles(&_particles, _particleCount);
 
     const uint32_t numberOfInstances = (uint32_t) modelMatrices.size();
     
@@ -172,69 +164,6 @@ static inline BOOL updateDataInArrayBuffer(const GLuint buffer,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     return success;
-}
-
-#pragma mark -
-#pragma mark Helper "methods"
-
-- (std::vector<GLKMatrix4>) modelMatrices
-{
-    std::vector<GLKMatrix4> modelMatrices;
-    
-    // new particles
-    uint32_t currentNumberOfParticles = (uint32_t) _particles.size();
-    uint32_t diff = _particleCount - currentNumberOfParticles;
-    
-    for (uint32_t i = 0; i < diff; ++i) {
-        _particles.push_back(particleWithInitialPosition());
-    }
-    
-    // adjust particle position
-    const GLfloat kFrameTime = 1.0f / 60.0f;
-    currentNumberOfParticles = (uint32_t) _particles.size();
-    
-    for (uint32_t i = 0; i < currentNumberOfParticles; ++i) {
-        particle_t *particle= &_particles.at(i);
-        
-        // insipred by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
-        particle->vec.y -= 1 * kFrameTime;
-        particle->position = GLKVector3Add(particle->position, GLKVector3MultiplyScalar(particle->vec, kFrameTime));
-        
-        if (particle->position.y < -2.0f) {
-            particle->position.y = -1.8f;
-            particle->vec.y = -particle->vec.y;
-            particle->vec = GLKVector3MultiplyScalar(particle->vec, 0.8f);
-        }
-        
-        modelMatrices.push_back(particleModelMatrix(particle));
-        
-    }
-    
-    return modelMatrices;
-}
-        
-static inline particle_t particleWithInitialPosition(void)
-{
-    particle_t newParticle;
-    
-    
-    newParticle.position = GLKVector3Make(0.f, 0.f, 0.f);
-    newParticle.scale = 0.05f;
-    
-    // inspired by https://github.com/floooh/oryol/blob/master/code/Samples/Instancing/Instancing.cc
-    newParticle.vec = ballRandomGLKVector3(0.5f);
-    newParticle.vec.y += 2.f;
-    
-    return newParticle;
-}
-
-static inline GLKMatrix4 particleModelMatrix(particle_t *particle)
-{
-    GLKMatrix4 modelMatrix = GLKMatrix4Identity;
-    modelMatrix = GLKMatrix4Translate(modelMatrix, particle->position.x, particle->position.y, particle->position.z);
-    modelMatrix = GLKMatrix4Scale(modelMatrix, particle->scale, particle->scale, particle->scale);
-    
-    return modelMatrix;
 }
 
 #pragma mark -
